@@ -11,7 +11,8 @@ Apresentação da proposta de piloto da rhapsody: jornada de 6 semanas, 4 casos 
 
 ## Navegação
 
-- Setas ← → do teclado, clique na tela ou deslize no celular
+- Computador: setas ← → do teclado ou clique na tela
+- Celular: os slides viram uma página vertical, é só rolar
 - Botão ⤢ para tela cheia
 - Link direto para um slide: `#s1`, `#s2`, `#s3`
 
