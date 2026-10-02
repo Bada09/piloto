@@ -181,7 +181,7 @@ h1,h2,h3{font-family:var(--display);letter-spacing:-.01em;text-wrap:balance}
 .dots button.cur{background:var(--cyan);width:24px;border-radius:4px}
 
 /* celular: os slides viram uma página vertical com rolagem */
-@media (max-width:820px){
+@media (max-width:820px), (orientation:portrait) and (max-width:1100px){
   body{overflow-x:hidden;overflow-y:auto}
   .viewport{position:relative;inset:auto;display:block}
   .stage{width:auto;height:auto;transform:none!important}
@@ -192,7 +192,7 @@ h1,h2,h3{font-family:var(--display);letter-spacing:-.01em;text-wrap:balance}
   .brand{font-size:24px}
   .sec{font-size:10px;letter-spacing:.14em}
   .title{font-size:29px;line-height:1.12;margin:0 -18px;padding:0 18px;background:var(--navy)}
-  .sub{font-size:15.5px;margin:0 -18px;padding:10px 18px 22px;background:var(--navy);position:relative}
+  .sub{font-size:15.5px;margin:0 -18px;padding:10px 18px 22px;background:var(--navy);position:relative;top:auto;left:auto;right:auto}
   .slide::after{display:none}
   .sub::after{content:"";position:absolute;left:0;bottom:-5px;height:5px;width:0;background:var(--cyan)}
   .slide.on .sub::after{animation:bandm .8s cubic-bezier(.2,.7,.2,1) .15s both}
@@ -402,7 +402,7 @@ h1,h2,h3{font-family:var(--display);letter-spacing:-.01em;text-wrap:balance}
   const stage=document.getElementById('stage'), slides=[...stage.querySelectorAll('.slide')], N=slides.length;
   slides.forEach((s,i)=>s.insertAdjacentHTML('beforeend',`<div class="ft"><span>rhapsody — proposta de piloto</span><span>${String(i+1).padStart(2,'0')} / ${String(N).padStart(2,'0')}</span></div>`));
 
-  const mob=matchMedia('(max-width:820px)');
+  const mob=matchMedia('(max-width:820px), (orientation:portrait) and (max-width:1100px)');
   function fit(){if(mob.matches){stage.style.transform='';return;}const k=Math.min(innerWidth/1280,innerHeight/720);stage.style.transform=`scale(${k})`;}
   fit(); addEventListener('resize',fit);
 
