@@ -134,7 +134,9 @@ h1,h2,h3{font-family:var(--display);letter-spacing:-.01em;text-wrap:balance}
 .tr span:last-child{font:700 14.5px var(--mono);color:var(--ink)}
 .tr.x span:last-child{color:var(--body);text-decoration:line-through}
 .pil{display:flex;justify-content:space-between;align-items:baseline;border-top:1px solid var(--line);padding-top:8px;margin-top:4px}
-.pil b{font:700 20px var(--display)}
+.pil b{font:700 20px var(--display);display:flex;align-items:center;gap:10px}
+.cut{font:700 12px var(--mono);font-style:normal;color:#FFFFFF;background:linear-gradient(90deg,#00AEEF,#1F5BFF);border-radius:999px;padding:3px 9px;opacity:0;transform:scale(.6);transition:opacity .3s,transform .4s cubic-bezier(.3,1.6,.5,1)}
+.pil.done .cut{opacity:1;transform:none}
 .pil span{font:700 34px var(--mono);background:var(--grad);-webkit-background-clip:text;background-clip:text;color:transparent;font-variant-numeric:tabular-nums}
 .ab{font:700 13px var(--mono);color:var(--lilac)}
 .ab2{font-size:13.5px;color:var(--body)}
@@ -332,7 +334,7 @@ h1,h2,h3{font-family:var(--display);letter-spacing:-.01em;text-wrap:balance}
           <div class="tr"><span>Construção</span><span data-n="16920">R$ 16.920</span></div>
           <div class="tr"><span>Infraestrutura e IA</span><span data-n="8030">R$ 8.030</span></div>
           <div class="tr x"><span>Custo total do projeto</span><span data-n="24950">R$ 24.950</span></div>
-          <div class="pil"><b>Piloto</b><span data-n="10000">R$ 10.000</span></div>
+          <div class="pil"><b>Piloto <em class="cut">−60%</em></b><span data-n="10000" data-from="24950" data-delay="1400" data-dur="2600">R$ 10.000</span></div>
           <p class="ab">rhapsody absorve R$ 14.950 (60%)</p>
           <p class="ab2"><b>100% abatido</b> na contratação, se a empresa seguir.</p>
         </div>
@@ -422,10 +424,14 @@ h1,h2,h3{font-family:var(--display);letter-spacing:-.01em;text-wrap:balance}
   requestAnimationFrame(draw);
 
   /* contagem dos valores */
+  /* conta até o valor; com data-from, o valor regride (ex.: piloto cai de R$ 24.950 para R$ 10.000) */
   function count(el){
-    const end=+el.dataset.n; if(reduce){el.textContent=fmt(end);return;}
-    const st=performance.now()+500, dur=1100;
-    (function step(n){const p=Math.max(0,Math.min(1,(n-st)/dur));el.textContent=fmt(Math.round(end*(1-Math.pow(1-p,3))/10)*10||0);if(p<1)requestAnimationFrame(step);else el.textContent=fmt(end);})(performance.now());
+    const end=+el.dataset.n, from=+(el.dataset.from||0), box=el.closest('.pil');
+    if(box) box.classList.remove('done');
+    if(reduce){el.textContent=fmt(end);box&&box.classList.add('done');return;}
+    const st=performance.now()+(+(el.dataset.delay||500)), dur=+(el.dataset.dur||1100);
+    el.textContent=fmt(from);
+    (function step(n){const p=Math.max(0,Math.min(1,(n-st)/dur));const v=from+(end-from)*(1-Math.pow(1-p,3));el.textContent=fmt(Math.round(v/10)*10);if(p<1)requestAnimationFrame(step);else{el.textContent=fmt(end);box&&box.classList.add('done');}})(performance.now());
   }
 
 
