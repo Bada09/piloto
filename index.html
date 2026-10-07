@@ -4,6 +4,8 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="robots" content="noindex">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
 <title>Piloto rhapsody</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Carlito:ital,wght@0,400;0,700;1,400&display=swap">
@@ -40,7 +42,7 @@ h1,h2,h3{font-family:var(--display);letter-spacing:-.01em;text-wrap:balance}
 .slide::after{content:"";position:absolute;z-index:-1;top:172px;left:56px;width:0;height:18px;background:var(--cyan);border-radius:0 0 16px 16px}
 /* sublinhado do título: entrada rápida, padrão de site */
 .slide.on::after{animation:band .8s cubic-bezier(.2,.7,.2,1) .15s both}
-@keyframes band{from{width:0}to{width:1168px}}
+@keyframes band{from{width:0}to{width:calc(100% - 112px)}}
 .hd,.title,.sub{--ink:#FFFFFF;--body:#C9D5E8;--label:#7FD6F6;--orangeT:#8FB4FF}
 .gr{background:var(--grad);-webkit-background-clip:text;background-clip:text;color:transparent}
 .hd{position:absolute;top:40px;left:80px;right:80px;display:flex;flex-direction:row-reverse;align-items:center}
@@ -60,7 +62,7 @@ h1,h2,h3{font-family:var(--display);letter-spacing:-.01em;text-wrap:balance}
 /* slide 1: timeline */
 .tl{position:relative;display:grid;grid-template-columns:repeat(6,1fr);height:104px}
 .tl .track{position:absolute;left:0;right:0;top:44px;height:3px;background:var(--track);border-radius:2px}
-.tl .fill{position:absolute;left:0;top:44px;height:3px;width:0;border-radius:2px;background:linear-gradient(90deg,#00AEEF,#1F8BFF 50%,#1F5BFF);background-size:1136px 100%;background-repeat:no-repeat}
+.tl .fill{position:absolute;left:0;top:44px;height:3px;width:0;border-radius:2px;background:linear-gradient(90deg,#00AEEF,#1F8BFF 50%,#1F5BFF);background-size:var(--tlw,1136px) 100%;background-repeat:no-repeat}
 /* linha percorre as 6 semanas em 7 s; cada marco acende quando a linha chega nele */
 .slide.on .tl .fill{animation:fill 7s linear .4s both}
 @keyframes fill{to{width:100%}}
@@ -196,7 +198,7 @@ h1,h2,h3{font-family:var(--display);letter-spacing:-.01em;text-wrap:balance}
 
 @media (prefers-reduced-motion:reduce){
   *,*::before,*::after{animation:none!important;transition:none!important}
-  .slide::after{width:1168px}
+  .slide::after{width:calc(100% - 112px)}
   .tl .fill{width:100%}.dot{transform:none}.row.d::after{transform:none}
 }
 </style>
@@ -359,7 +361,15 @@ h1,h2,h3{font-family:var(--display);letter-spacing:-.01em;text-wrap:balance}
   slides.forEach((s,i)=>s.insertAdjacentHTML('beforeend',`<div class="ft"><span>rhapsody — proposta de piloto</span><span>${String(i+1).padStart(2,'0')} / ${String(N).padStart(2,'0')}</span></div>`));
 
   const mob={matches:false}; /* celular usa o mesmo layout horizontal do computador */
-  function fit(){if(mob.matches){stage.style.transform='';return;}const k=Math.min(innerWidth/1280,innerHeight/720);stage.style.transform=`translate(-50%,-50%) scale(${k})`;}
+  /* telas mais largas que 16:9 (celular deitado): o slide estica na largura e ocupa a tela inteira */
+  function fit(){
+    if(mob.matches){stage.style.transform='';return;}
+    const vw=innerWidth, vh=innerHeight;
+    let k=Math.min(vw/1280,vh/720), W=1280;
+    if(vw/vh>1280/720){k=vh/720;W=Math.min(vw/k,1700);}
+    stage.style.width=W+'px'; stage.style.setProperty('--tlw',(W-144)+'px');
+    stage.style.transform=`translate(-50%,-50%) scale(${k})`;
+  }
   fit(); addEventListener('resize',fit);
 
   /* ondas da marca */
